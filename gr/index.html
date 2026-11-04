@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flow Studio Pilates — Ιστορικό Υγείας</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 13px; background: #fff; color: #1a1a2e; width: 100%; overflow-x: hidden; }
+  .page { width: 100%; max-width: 820px; margin: 0 auto; padding: 24px 16px; }
+
+  .header { text-align: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 2px solid #6b7459; }
+  .header h1 { font-size: 20px; font-weight: 700; color: #4a5240; letter-spacing: 1px; }
+  .header .subtitle { font-size: 10px; color: #888; margin-top: 4px; letter-spacing: 2px; text-transform: uppercase; }
+
+  .section { margin-bottom: 20px; }
+  .section-title { font-size: 13px; font-weight: 700; color: #4a5240; text-transform: none; letter-spacing: 0; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #dde1d3; }
+
+  .fields-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; }
+  .field-group { display: flex; flex-direction: column; gap: 3px; }
+  .field-group label { font-size: 10px; font-weight: 700; color: #6b7459; text-transform: uppercase; letter-spacing: 0.8px; }
+  .field-group input[type="text"], .field-group input[type="email"], .field-group input[type="tel"], .field-group input[type="date"] {
+    border: 1.5px solid #cdd2c0; border-radius: 5px; padding: 7px 10px;
+    font-size: 13px; font-family: inherit; background: #f6f7f2; width: 100%;
+  }
+  .field-group input:focus { outline: none; border-color: #6b7459; background: #fff; }
+
+  /* Checkbox grid */
+  .cb-grid { display: grid; border: 1px solid #d3d8c8; border-radius: 6px; overflow: hidden; margin-bottom: 8px; }
+  .cb-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+  .cb-grid.cols-5 { grid-template-columns: repeat(5, 1fr); }
+  .cb-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+
+  .cb-cell { display: flex; align-items: flex-start; gap: 6px; padding: 6px 8px; border-right: 1px solid #d3d8c8; border-bottom: 1px solid #d3d8c8; cursor: pointer; font-size: 11px; line-height: 1.35; }
+  .cb-cell:hover { background: #eceee5; }
+  .cb-cell input[type="checkbox"] { margin-top: 2px; flex-shrink: 0; width: 13px; height: 13px; accent-color: #6b7459; cursor: pointer; }
+  .cols-4 .cb-cell:nth-child(4n) { border-right: none; }
+  .cols-5 .cb-cell:nth-child(5n) { border-right: none; }
+  .cols-3 .cb-cell:nth-child(3n) { border-right: none; }
+  .cols-4 .cb-cell:nth-last-child(-n+4) { border-bottom: none; }
+  .cols-5 .cb-cell:nth-last-child(-n+5) { border-bottom: none; }
+  .cols-3 .cb-cell:nth-last-child(-n+3) { border-bottom: none; }
+
+  /* Symptoms checkboxes (horizontal) */
+  .symptoms-row { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 8px 0; }
+  .symptom-item { display: flex; align-items: center; gap: 6px; font-size: 12px; cursor: pointer; }
+  .symptom-item input { width: 14px; height: 14px; accent-color: #6b7459; }
+
+  /* Habits */
+  .habits-list { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
+  .habit-item { display: flex; align-items: flex-start; gap: 8px; }
+  /* Checkbox + label travel together as one flex item, so a long label can
+     never wrap away from its own checkbox when the row runs out of space. */
+  .habit-check { display: flex; align-items: flex-start; gap: 8px; }
+  .habit-item input[type="checkbox"] { margin-top: 3px; width: 14px; height: 14px; accent-color: #6b7459; flex-shrink: 0; }
+  .habit-item .habit-label { font-size: 12.5px; }
+  .habit-item input[type="text"] { border: 1.5px solid #cdd2c0; border-radius: 5px; padding: 4px 8px; font-size: 12px; font-family: inherit; background: #f6f7f2; flex: 1; margin-left: 4px; }
+
+  .bullet-section { margin-bottom: 12px; }
+  .bullet-section p { font-size: 12.5px; margin-bottom: 5px; line-height: 1.5; }
+  textarea { width: 100%; border: 1.5px solid #cdd2c0; border-radius: 5px; padding: 8px 10px; font-size: 13px; font-family: inherit; background: #f6f7f2; resize: vertical; }
+  textarea:focus { outline: none; border-color: #6b7459; background: #fff; }
+
+  .note { font-size: 10.5px; color: #666; font-style: italic; margin-bottom: 6px; line-height: 1.5; }
+
+  /* GDPR / Declaration */
+  .declaration { background: #f3f4ee; border-left: 3px solid #6b7459; border-radius: 0 6px 6px 0; padding: 12px 16px; font-size: 11.5px; line-height: 1.7; color: #333; margin-bottom: 14px; }
+  .declaration h3 { font-size: 13px; font-weight: 700; color: #4a5240; margin-bottom: 6px; }
+  .declaration h4 { font-size: 12px; font-weight: 700; color: #6b7459; margin: 10px 0 4px; }
+
+  /* Consent checkbox */
+  .consent-row { display: flex; align-items: flex-start; gap: 10px; margin: 14px 0; padding: 12px; background: #eceee5; border-radius: 6px; border: 1.5px solid #cdd2c0; }
+  .consent-row input { width: 18px; height: 18px; accent-color: #6b7459; flex-shrink: 0; margin-top: 2px; }
+  .consent-row label { font-size: 12.5px; font-weight: 600; color: #4a5240; cursor: pointer; }
+
+  /* Signature */
+  .sig-wrapper { display: grid; grid-template-columns: 1fr 180px; gap: 16px; align-items: start; }
+  .sig-label, .date-label { font-size: 10px; font-weight: 700; color: #6b7459; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 5px; }
+  .sig-container { border: 1.5px solid #cdd2c0; border-radius: 6px; background: #f6f7f2; position: relative; }
+  #sigCanvas { display: block; width: 100%; height: 120px; cursor: crosshair; border-radius: 6px; touch-action: none; }
+  .sig-hint { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 12px; color: #bbb; pointer-events: none; text-align: center; width: 100%; }
+  .sig-clear { position: absolute; top: 6px; right: 8px; font-size: 11px; color: #6b7459; cursor: pointer; background: rgba(255,255,255,0.9); border: 1px solid #cdd2c0; border-radius: 4px; padding: 2px 8px; font-family: inherit; }
+
+  /* Submit */
+  .action-bar { text-align: center; margin-top: 20px; padding-top: 16px; border-top: 1px solid #dde1d3; }
+  .btn-submit { background: #4a5240; color: #fff; border: none; border-radius: 6px; padding: 13px 40px; font-size: 15px; font-weight: 600; font-family: inherit; cursor: pointer; transition: background 0.2s; }
+  .btn-submit:hover { background: #6b7459; }
+  .btn-submit:disabled { background: #aaa; cursor: not-allowed; }
+  .submit-note { font-size: 11px; color: #999; margin-top: 6px; }
+
+  #toast { display: none; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #4a5240; color: #fff; padding: 14px 28px; border-radius: 8px; font-size: 14px; z-index: 999; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+  #toast.error { background: #c0392b; }
+
+  .divider { border-top: 2px dashed #d3d8c8; margin: 20px 0; }
+  .form-footer { text-align: center; font-size: 10px; color: #aaa; margin-top: 16px; padding-top: 10px; border-top: 1px solid #e6e9de; font-style: italic; }
+
+
+  /* Watermark */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 350px;
+    height: 350px;
+    background-image: url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/4QphaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLwA8P3hwYWNrZXQgYmVnaW49J++7vycgaWQ9J1c1TTBNcENlaGlIenJlU3pOVGN6a2M5ZCc/Pgo8eDp4bXBtZXRhIHhtbG5zOng9J2Fkb2JlOm5zOm1ldGEvJz4KPHJkZjpSREYgeG1sbnM6cmRmPSdodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjJz4KCiA8cmRmOkRlc2NyaXB0aW9uIHhtbG5zOmRjPSdodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyc+CiAgPGRjOmZvcm1hdD5pbWFnZS9qcGVnPC9kYzpmb3JtYXQ+CiAgPGRjOnRpdGxlPgogICA8cmRmOkFsdD4KICAgIDxyZGY6bGkgeG1sOmxhbmc9J3gtZGVmYXVsdCc+eC1kZWZhdWx0PC9yZGY6bGk+CiAgIDwvcmRmOkFsdD4KICA8L2RjOnRpdGxlPgogPC9yZGY6RGVzY3JpcHRpb24+CgogPHJkZjpEZXNjcmlwdGlvbiB4bWxuczp4bXA9J2h0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8nPgogIDx4bXA6TWV0YWRhdGFEYXRlPjIwMTEtMDktMjJUMjI6NTQ6MjArMDM6MDA8L3htcDpNZXRhZGF0YURhdGU+CiAgPHhtcDpNb2RpZnlEYXRlPjIwMTEtMDktMjJUMTk6NTQ6MjJaPC94bXA6TW9kaWZ5RGF0ZT4KICA8eG1wOkNyZWF0ZURhdGU+MjAxMS0wOS0yMlQyMjo1NDoyMCswMzowMDwveG1wOkNyZWF0ZURhdGU+CiAgPHhtcDpDcmVhdG9yVG9vbD5BZG9iZSBJbGx1c3RyYXRvciBDUzQ8L3htcDpDcmVhdG9yVG9vbD4KIDwvcmRmOkRlc2NyaXB0aW9uPgoKIDxyZGY6RGVzY3JpcHRpb24geG1sbnM6eG1wTU09J2h0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8nPgogIDx4bXBNTTpJbnN0YW5jZUlEPnhtcC5paWQ6OEUzMDk1OUE1NEU1RTAxMThFRTdDMzgxQTE5REZFNDQ8L3htcE1NOkluc3RhbmNlSUQ+CiAgPHhtcE1NOkRvY3VtZW50SUQgcmRmOnJlc291cmNlPSd4bXAuZGlkOjhFMzA5NTlBNTRFNUUwMTE4RUU3QzM4MUExOURGRTQ0JyAvPgogIDx4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ+dXVpZDo1RDIwODkyNDkzQkZEQjExOTE0QTg1OTBEMzE1MDhDODwveG1wTU06T3JpZ2luYWxEb2N1bWVudElEPgogIDx4bXBNTTpSZW5kaXRpb25DbGFzcz5wcm9vZjpwZGY8L3htcE1NOlJlbmRpdGlvbkNsYXNzPgogIDx4bXBNTTpEZXJpdmVkRnJvbSByZGY6cGFyc2VUeXBlPSdSZXNvdXJjZScKICAgeG1sbnM6c3RSZWY9J2h0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMnPgogICA8c3RSZWY6aW5zdGFuY2VJRD54bXAuaWlkOjhEMzA5NTlBNTRFNUUwMTE4RUU3QzM4MUExOURGRTQ0PC9zdFJlZjppbnN0YW5jZUlEPgogICA8c3RSZWY6ZG9jdW1lbnRJRD54bXAuZGlkOjhEMzA5NTlBNTRFNUUwMTE4RUU3QzM4MUExOURGRTQ0PC9zdFJlZjpkb2N1bWVudElEPgogICA8c3RSZWY6b3JpZ2luYWxEb2N1bWVudElEPnV1aWQ6NUQyMDg5MjQ5M0JGREIxMTkxNEE4NTkwRDMxNTA4Qzg8L3N0UmVmOm9yaWdpbmFsRG9jdW1lbnRJRD4KICAgPHN0UmVmOnJlbmRpdGlvbkNsYXNzPnByb29mOnBkZjwvc3RSZWY6cmVuZGl0aW9uQ2xhc3M+CiAgPC94bXBNTTpEZXJpdmVkRnJvbT4KIDwvcmRmOkRlc2NyaXB0aW9uPgoKIDxyZGY6RGVzY3JpcHRpb24geG1sbnM6aWxsdXN0cmF0b3I9J2h0dHA6Ly9ucy5hZG9iZS5jb20vaWxsdXN0cmF0b3IvMS4wLyc+CiAgPGlsbHVzdHJhdG9yOlN0YXJ0dXBQcm9maWxlPlByaW50PC9pbGx1c3RyYXRvcjpTdGFydHVwUHJvZmlsZT4KIDwvcmRmOkRlc2NyaXB0aW9uPgoKIDxyZGY6RGVzY3JpcHRpb24geG1sbnM6eG1wVFBnPSdodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvdC9wZy8nPgogIDx4bXBUUGc6SGFzVmlzaWJsZU92ZXJwcmludD5GYWxzZTwveG1wVFBnOkhhc1Zpc2libGVPdmVycHJpbnQ+CiAgPHhtcFRQZzpIYXNWaXNpYmxlVHJhbnNwYXJlbmN5PkZhbHNlPC94bXBUUGc6SGFzVmlzaWJsZVRyYW5zcGFyZW5jeT4KICA8eG1wVFBnOk5QYWdlcz4xPC94bXBUUGc6TlBhZ2VzPgogIDx4bXBUUGc6TWF4UGFnZVNpemUgcmRmOnBhcnNlVHlwZT0nUmVzb3VyY2UnCiAgIHhtbG5zOnN0RGltPSdodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvRGltZW5zaW9ucyMnPgogICA8c3REaW06dz4xMi4wMDAwOTQ8L3N0RGltOnc+CiAgIDxzdERpbTpoPjE4LjUwMDAyNTwvc3REaW06aD4KICAgPHN0RGltOnVuaXQ+Q2VudGltZXRlcnM8L3N0RGltOnVuaXQ+CiAgPC94bXBUUGc6TWF4UGFnZVNpemU+CiAgPHhtcFRQZzpQbGF0ZU5hbWVzPgogICA8cmRmOkJhZz4KICAgIDxyZGY6bGk+Q3lhbjwvcmRmOmxpPgogICAgPHJkZjpsaT5ZZWxsb3c8L3JkZjpsaT4KICAgIDxyZGY6bGk+QmxhY2s8L3JkZjpsaT4KICAgPC9yZGY6QmFnPgogIDwveG1wVFBnOlBsYXRlTmFtZXM+CiA8L3JkZjpEZXNjcmlwdGlvbj4KCiA8cmRmOkRlc2NyaXB0aW9uIHhtbG5zOnhtcEc9J2h0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9nLyc+CiA8L3JkZjpEZXNjcmlwdGlvbj4KCiA8cmRmOkRlc2NyaXB0aW9uIHhtbG5zOnBkZj0naHR0cDovL25zLmFkb2JlLmNvbS9wZGYvMS4zLyc+CiAgPHBkZjpQcm9kdWNlcj5BZG9iZSBQREYgbGlicmFyeSA5LjAwPC9wZGY6UHJvZHVjZXI+CiA8L3JkZjpEZXNjcmlwdGlvbj4KCjwvcmRmOlJERj4KPC94OnhtcG1ldGE+Cjw/eHBhY2tldCBlbmQ9J3InPz4K/9sAQwABAQEBAQEBAQEBAQEBAQEB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');
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    opacity: 0.06;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .page { position: relative; z-index: 1; }
+
+  @media (max-width: 700px) {
+    .fields-grid { grid-template-columns: 1fr; }
+    .cb-grid.cols-4 { grid-template-columns: repeat(2, 1fr); }
+    .cb-grid.cols-5 { grid-template-columns: repeat(2, 1fr); }
+    .cb-grid.cols-3 { grid-template-columns: repeat(2, 1fr); }
+    /* Borders are controlled by JS after mobile reordering */
+    .cb-cell.mobile-right {
+      border-right: none !important;
+    }
+
+    .cb-cell.mobile-left {
+      border-right: 1px solid #d3d8c8 !important;
+    }
+    /* Keep all horizontal separators visible after mobile reorder */
+    .sig-wrapper { grid-template-columns: 1fr; }
+    .habit-item { flex-wrap: wrap; }
+    /* Force the detail input onto its own full-width line every time,
+       instead of leaving it to flex-wrap to sometimes squeeze into
+       whatever space is left at the end of the label's last line. */
+    .habit-item input[type="text"] { flex: 1 1 100%; margin-left: 0; width: 100%; }
+  }
+
+  @media (max-width:700px) {
+    /* Fix mobile reordered grid borders */
+    .cb-grid.cols-4 .cb-cell {
+      border-bottom: 1px solid #d3d8c8 !important;
+    }
+
+    .cb-grid.cols-4 .cb-cell.mobile-right {
+      border-right: none !important;
+    }
+
+    .cb-grid.cols-4 .cb-cell.mobile-left {
+      border-right: 1px solid #d3d8c8 !important;
+    }
+  }
+
+  /* ===== Section 3 (Μυοσκελετικό) grid =====
+     One single grid/one set of checkboxes for both desktop and mobile — only the
+     layout changes at the breakpoint, so there's no risk of the desktop and
+     mobile checkbox lists ever getting out of sync with each other.
+     Mobile (default): natural 2-column reading order, following DOM order.
+     Lines drawn with border-top/border-left only (never border-right/bottom),
+     so an incomplete last row never needs special-casing.
+     Desktop: explicit 5-column thematic layout (spine / posture-tendon /
+     joint-entrapment / knee-ligament / foot-misc), each checkbox pinned to a
+     specific row+column to match the printed reference sheet. Since every one
+     of the 35 items gets its own cell (full 5x7 grid, no gaps), lines are
+     drawn with a simpler grid gap + background-color trick there. */
+  #grid-p3 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    border: 1px solid #d3d8c8;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+  #grid-p3 .cb-cell {
+    border-top: 1px solid #d3d8c8;
+    border-left: 1px solid #d3d8c8;
+  }
+  #grid-p3 .cb-cell:nth-child(-n+2) { border-top: none; }
+  #grid-p3 .cb-cell:nth-child(2n+1) { border-left: none; }
+  #grid-p3 .p3-full { grid-column: 1 / -1; border-left: none; }
+
+  @media (min-width:701px){
+    #grid-p3 {
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1px;
+      background: #d3d8c8;
+    }
+    #grid-p3 .cb-cell {
+      background: #fff;
+      border: none;
+    }
+    /* row / column position per item — see comment for the item name */
+    #grid-p3 .cb-cell:nth-child(1)  { grid-area: 1 / 1; } /* Αυχεναλγία */
+    #grid-p3 .cb-cell:nth-child(2)  { grid-area: 4 / 3; } /* Τροχαντηρίτιδα */
+    #grid-p3 .cb-cell:nth-child(3)  { grid-area: 2 / 1; } /* Οσφυαλγία */
+    #grid-p3 .cb-cell:nth-child(4)  { grid-area: 5 / 3; } /* Οστεοαρθρίτιδα */
+    #grid-p3 .cb-cell:nth-child(5)  { grid-area: 3 / 1; } /* Ισχιαλγία */
+    #grid-p3 .cb-cell:nth-child(6)  { grid-area: 6 / 3; } /* Αρθροπλαστική */
+    #grid-p3 .cb-cell:nth-child(7)  { grid-area: 4 / 1; } /* Δισκοκήλη (Κήλη, Βουβωνοκήλη) */
+    #grid-p3 .cb-cell:nth-child(8)  { grid-area: 7 / 3; } /* Χονδροπάθεια */
+    #grid-p3 .cb-cell:nth-child(9)  { grid-area: 5 / 1; } /* Στένωση */
+    #grid-p3 .cb-cell:nth-child(10) { grid-area: 1 / 4; } /* Κύστη Baker */
+    #grid-p3 .cb-cell:nth-child(11) { grid-area: 6 / 1; } /* Σπονδυλόλυση */
+    #grid-p3 .cb-cell:nth-child(12) { grid-area: 2 / 4; } /* Ρήξη */
+    #grid-p3 .cb-cell:nth-child(13) { grid-area: 7 / 1; } /* Σπονδυλολίσθηση */
+    #grid-p3 .cb-cell:nth-child(14) { grid-area: 3 / 4; } /* Μηνίσκος */
+    #grid-p3 .cb-cell:nth-child(15) { grid-area: 1 / 2; } /* Κύφωση */
+    #grid-p3 .cb-cell:nth-child(16) { grid-area: 4 / 4; } /* Χιαστός */
+    #grid-p3 .cb-cell:nth-child(17) { grid-area: 2 / 2; } /* Λόρδωση */
+    #grid-p3 .cb-cell:nth-child(18) { grid-area: 5 / 4; } /* Διάστρεμμα */
+    #grid-p3 .cb-cell:nth-child(19) { grid-area: 3 / 2; } /* Σκολίωση */
+    #grid-p3 .cb-cell:nth-child(20) { grid-area: 6 / 4; } /* Κάταγμα */
+    #grid-p3 .cb-cell:nth-child(21) { grid-area: 4 / 2; } /* Τενοντοπάθεια */
+    #grid-p3 .cb-cell:nth-child(22) { grid-area: 7 / 4; } /* Οστικό Οίδημα */
+    #grid-p3 .cb-cell:nth-child(23) { grid-area: 5 / 2; } /* Τενοντίτιδα */
+    #grid-p3 .cb-cell:nth-child(24) { grid-area: 1 / 5; } /* Θλάσεις */
+    #grid-p3 .cb-cell:nth-child(25) { grid-area: 6 / 2; } /* Ασβεστοποιός Τενοντίτιδα */
+    #grid-p3 .cb-cell:nth-child(26) { grid-area: 2 / 5; } /* Κράμπες */
+    #grid-p3 .cb-cell:nth-child(27) { grid-area: 7 / 2; } /* Επικονδυλίτιδα (Tennis Elbow) */
+    #grid-p3 .cb-cell:nth-child(28) { grid-area: 3 / 5; } /* Πλατυποδία */
+    #grid-p3 .cb-cell:nth-child(29) { grid-area: 1 / 3; } /* Παγωμένος ώμος */
+    #grid-p3 .cb-cell:nth-child(30) { grid-area: 4 / 5; } /* Πελματιαία Απονευρωσίτιδα */
+    #grid-p3 .cb-cell:nth-child(31) { grid-area: 2 / 3; } /* Σύνδρομο καρπιαίου σωλήνα */
+    #grid-p3 .cb-cell:nth-child(32) { grid-area: 5 / 5; } /* Άκανθα Πτέρνα */
+    #grid-p3 .cb-cell:nth-child(33) { grid-area: 3 / 3; } /* Σύνδρομο θωρακικής εξόδου */
+    #grid-p3 .cb-cell:nth-child(34) { grid-area: 6 / 5; } /* Κότσι */
+    #grid-p3 .cb-cell:nth-child(35) { grid-area: 7 / 5; } /* Άλλη Πάθηση ή Τραυματισμός (no longer full-width on desktop) */
+  }
+
+/* ===== Section 2 (Αυτοάνοσα) desktop grid =====
+   5-column thematic layout matching the printed reference sheet — each of the
+   25 checkboxes pinned to a specific row+column. #grid-p2 is only ever shown
+   at desktop widths (the mobile media query below hides it and shows the
+   separate .p2-mobile-only list instead), so this needs no media query of
+   its own. Uses the same gap + background-color line trick as section 3 —
+   safe here since 25 items fill the 5x5 grid exactly, no empty cells. */
+#grid-p2 {
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1px;
+  background: #d3d8c8;
+}
+#grid-p2 .cb-cell {
+  background: #fff;
+  border: none;
+}
+#grid-p2 .cb-cell:nth-child(1)  { grid-area: 1 / 1; } /* Hashimoto/Graves */
+#grid-p2 .cb-cell:nth-child(2)  { grid-area: 1 / 3; } /* Ψωρίαση */
+#grid-p2 .cb-cell:nth-child(3)  { grid-area: 1 / 2; } /* Συστημικός Ερυθηματώδης Λύκος (ΣΕΛ) */
+#grid-p2 .cb-cell:nth-child(4)  { grid-area: 1 / 4; } /* Εγκεφαλικό Επεισόδιο */
+#grid-p2 .cb-cell:nth-child(5)  { grid-area: 2 / 1; } /* Σκλήρυνση κατά πλάκας */
+#grid-p2 .cb-cell:nth-child(6)  { grid-area: 1 / 5; } /* Νευραλγία */
+#grid-p2 .cb-cell:nth-child(7)  { grid-area: 2 / 2; } /* Σκληρόδερμα */
+#grid-p2 .cb-cell:nth-child(8)  { grid-area: 2 / 3; } /* Ψωριασική Αρθρίτιδα */
+#grid-p2 .cb-cell:nth-child(9)  { grid-area: 3 / 1; } /* Μυασθένεια Gravis */
+#grid-p2 .cb-cell:nth-child(10) { grid-area: 3 / 3; } /* Ρευματοειδής Αρθρίτιδα */
+#grid-p2 .cb-cell:nth-child(11) { grid-area: 3 / 2; } /* Σύνδρομο Raynaud */
+#grid-p2 .cb-cell:nth-child(12) { grid-area: 2 / 4; } /* Νόσος Πάρκινσον */
+#grid-p2 .cb-cell:nth-child(13) { grid-area: 4 / 1; } /* Νόσος Addison */
+#grid-p2 .cb-cell:nth-child(14) { grid-area: 2 / 5; } /* Ινομυαλγία */
+#grid-p2 .cb-cell:nth-child(15) { grid-area: 4 / 2; } /* Σύνδρομο Sjögren */
+#grid-p2 .cb-cell:nth-child(16) { grid-area: 3 / 4; } /* Νόσος Alzheimer */
+#grid-p2 .cb-cell:nth-child(17) { grid-area: 5 / 1; } /* Αυτοάνοση Ηπατίτιδα */
+#grid-p2 .cb-cell:nth-child(18) { grid-area: 3 / 5; } /* Ημικρανίες */
+#grid-p2 .cb-cell:nth-child(19) { grid-area: 5 / 2; } /* Λεύκη */
+#grid-p2 .cb-cell:nth-child(20) { grid-area: 4 / 3; } /* Νόσος του Crohn */
+#grid-p2 .cb-cell:nth-child(21) { grid-area: 4 / 5; } /* Ίλιγγος */
+#grid-p2 .cb-cell:nth-child(22) { grid-area: 5 / 4; } /* Επιληπτικά Επεισόδια */
+#grid-p2 .cb-cell:nth-child(23) { grid-area: 5 / 3; } /* Ελκώδης Κολίτιδα */
+#grid-p2 .cb-cell:nth-child(24) { grid-area: 4 / 4; } /* Άνοια */
+#grid-p2 .cb-cell:nth-child(25) { grid-area: 5 / 5; } /* Άλλο αυτοάνοσο (Οτιδήποτε άλλο) */
+
+/* P2 custom mobile like P3 */
+.p2-mobile-only{display:none;}
+@media(max-width:700px){
+  #grid-p2{display:none !important;}
+  .p2-mobile-only{display:grid !important;grid-template-columns:1fr 1fr;gap:0;border:1px solid #d3d8c8;border-radius:6px;overflow:hidden;}
+  .p2-mobile-only .cb-cell{border-bottom:1px solid #d3d8c8;border-right:1px solid #d3d8c8;}
+  .p2-mobile-only .cb-cell:nth-child(2n){border-right:none;}
+  .p2-mobile-only .cb-cell:nth-last-child(-n+2){border-bottom:none;}
+  .p2-mobile-only .cb-cell:last-child{grid-column:1/-1;border-right:none;border-bottom:none;border-top:1px solid #d3d8c8;}
+}
+  /* Required fields */
+  .req { color: #c0392b; font-weight: 700; }
+  .invalid { border-color: #c0392b !important; background: #fdf1f0 !important; box-shadow: 0 0 0 2px rgba(192,57,43,0.15); }
+  .consent-row.invalid { border-color: #c0392b !important; }
+  .hpx { position: absolute !important; left: -10000px !important; top: auto; width: 1px; height: 1px; overflow: hidden; }
+  .btn-edit { background: #fff; color: #4a5240; border: 1.5px solid #4a5240; border-radius: 6px; padding: 10px 26px; font-size: 14px; font-weight: 600; font-family: inherit; cursor: pointer; }
+  .btn-edit:hover { background: #eceee5; }
+
+  .err-msg { color:#c0392b; font-size:11.5px; font-weight:600; margin-top:3px; }
+  .habit-item:not(.open) input[type="text"] { display:none; }
+  #doneScreen { display:none; position:fixed; inset:0; z-index:9999; background:rgba(26,26,46,.55); align-items:center; justify-content:center; padding:16px; }
+  #doneScreen.show { display:flex; }
+  #doneScreen .card { background:#fff; border-radius:12px; max-width:420px; width:100%; padding:28px 22px; text-align:center; box-shadow:0 10px 40px rgba(0,0,0,.25); }
+  #doneScreen .tick { width:64px; height:64px; border-radius:50%; background:#2e9e6b; color:#fff; font-size:36px; line-height:64px; margin:0 auto 14px; }
+  #doneScreen h2 { font-size:22px; color:#4a5240; margin-bottom:6px; }
+  #doneScreen p { font-size:14px; color:#444; margin-bottom:10px; }
+  #doneScreen .code { display:inline-block; font-family:monospace; font-size:16px; letter-spacing:2px; background:#eceee5; border-radius:6px; padding:6px 12px; margin-bottom:14px; color:#4a5240; }
+  #doneScreen button { display:block; width:100%; margin-top:8px; }
+
+  .brand { background:#788069; border-radius:12px; padding:14px; text-align:center; margin-bottom:14px; }
+  .brand img { height:150px; width:auto; display:block; margin:0 auto; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div style="text-align:right;font-size:12px;margin-bottom:6px;"><a href="../en/" style="color:#6b7459;text-decoration:none;font-weight:600;">🌐 English</a></div>
+    <div class="brand"><img src="data:image/jpeg;base64,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" alt="Flow Studio Pilates"></div>
+    <h1>Προφίλ Ασκούμενου &amp; Ιστορικό Υγείας</h1>
+  </div>
+
+  <!-- PERSONAL INFO -->
+  <div class="section">
+    <div class="section-title">Προσωπικά Στοιχεία</div>
+    <div class="fields-grid">
+      <div class="field-group"><label>Ονοματεπώνυμο <span class="req">*</span></label><input type="text" id="f_onoma" autocomplete="name" placeholder="Όνομα Επώνυμο"></div>
+      <div class="field-group"><label>Επάγγελμα <span class="req">*</span></label><input type="text" id="f_epag"></div>
+      <div class="field-group">
+        <label>Ημερομηνία Γέννησης <span class="req">*</span></label>
+        <div style="display:flex;gap:6px;">
+          <select id="f_dob_d" style="border:1.5px solid #cdd2c0;border-radius:5px;padding:7px 6px;font-size:13px;font-family:inherit;background:#f6f7f2;flex:1;">
+            <option value="">ΗΗ</option><option value="01">01</option><option value="02">02</option><option value="03">03</option><option value="04">04</option><option value="05">05</option><option value="06">06</option><option value="07">07</option><option value="08">08</option><option value="09">09</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option>
+          </select>
+          <select id="f_dob_m" style="border:1.5px solid #cdd2c0;border-radius:5px;padding:7px 6px;font-size:13px;font-family:inherit;background:#f6f7f2;flex:2;">
+            <option value="">Μήνας</option><option value="01">Ιανουάριος</option><option value="02">Φεβρουάριος</option><option value="03">Μάρτιος</option><option value="04">Απρίλιος</option><option value="05">Μάιος</option><option value="06">Ιούνιος</option><option value="07">Ιούλιος</option><option value="08">Αύγουστος</option><option value="09">Σεπτέμβριος</option><option value="10">Οκτώβριος</option><option value="11">Νοέμβριος</option><option value="12">Δεκέμβριος</option>
+          </select>
+          <select id="f_dob_y" style="border:1.5px solid #cdd2c0;border-radius:5px;padding:7px 6px;font-size:13px;font-family:inherit;background:#f6f7f2;flex:1.5;">
+            <option value="">ΕΕΕΕ</option>
+          </select>
+          <script>
+            (function() {
+              const sel = document.getElementById('f_dob_y');
+              const currentYear = new Date().getFullYear();
+              for (let y = 1940; y <= currentYear; y++) {
+                const opt = document.createElement('option');
+                opt.value = y; opt.textContent = y;
+                sel.appendChild(opt);
+              }
+            })();
+          </script>
+        </div>
+      </div>
+      <div class="field-group"><label>Διεύθυνση &amp; Περιοχή <span class="req">*</span></label><input type="text" id="f_dieu" autocomplete="street-address"></div>
+      <div class="field-group"><label>Τηλέφωνο Επικοινωνίας <span class="req">*</span></label><input type="tel" id="f_til" inputmode="tel" autocomplete="tel" placeholder="π.χ. 6971234567"></div>
+      <div class="field-group"><label>Email <span class="req">*</span></label><input type="email" id="f_email" inputmode="email" autocomplete="email" autocapitalize="off"></div>
+      <div class="field-group" style="grid-column:1/-1;"><label>Επαφή Έκτακτης Ανάγκης (ICE) — Όνομα / Τηλέφωνο <span class="req">*</span></label><input type="text" id="f_ice" placeholder="π.χ. Μαρία Παπαδοπούλου 6981234567"></div>
+    </div>
+  </div>
+
+  <!-- KARDIOLOGIKA -->
+  <div class="section">
+    <div class="section-title">1. Καρδιολογικά, Αναπνευστικά, Γαστρεντερολογικά, Γυναικολογικά &amp; Λοιπά Νοσήματα</div>
+    <p class="note">Επιλέξτε όσα ισχύουν:</p>
+    <div class="cb-grid cols-4" id="grid-p1">
+      <label class="cb-cell"><input type="checkbox" name="p1" value="Υπέρταση"> Υπέρταση (Τιμές)</label>
+      <label class="cb-cell"><input type="checkbox" name="p1" value="Σακχαρώδης Διαβήτης"> Σακχαρώδης Διαβήτης (Τύπος &amp; Τιμές)</label>
+      <label class="cb-cell"><input type="checkbox" name="p1" value="Νεφρολιθίαση"> Νεφρολιθίαση</label>
+      <label class="cb-cell"><input type="checkbox" name="p1" value="Οστεοπενία"> Οστεοπενία</label>
+      <label class="cb-cell"><input type="checkbox" name="p1" value="Υπόταση"> Υπόταση (Τιμές)</label>
+      <label class="cb-cell"><input type="checkbox" name="p1" value="Χοληστερίνη"> Χοληστερίνη (Τιμές)</label>
+      <label class="cb-cell"><input type="checkbox" name="p1" value="Σύνδρομο ευερέθιστου εντέρου"> Σύνδρομο ευερέθιστου εντέρου</label>
+      <label class="cb-cell"><input type="checkbox" name="p1" value="Οστεοπόρωση"> Οστεοπόρωση</label>
+      <label class="cb-cell"><input type="checkbox" name="p1" value="Αρρυθμίες"> Αρρυθμίες</label>
+      <label class="cb-cell"><input type="checkbox" name="p1" value="Τριγλυκερίδια"> Τριγλυκερίδια (Τιμές)</label>
+      <label class="cb-cell"><input type="checkbox" name="p1" value="Γαστροοισοφαγική παλινδρόμηση"> Γαστροοισοφαγική παλινδρόμηση</label>
+      <label class="cb-cell"><input type="checkbox" name="p1" value="Εμμηνόπαυση"> Εμμηνόπαυση</label>
+      <label class="cb-cell"><input type="checkbox" name="p1" value="Άλλα Καρδιολογικά"> Άλλα Καρδιολογικά Προβλήματα</label>
+      <label class="cb-cell"><input type="checkbox" name="p1" value="Ουρικό Οξύ"> Ουρικό Οξύ (Τιμές)</label>
+      <label class="cb-cell"><input type="checkbox" name="p1" value="Γαστρίτιδα"> Γαστρίτιδα</label>
+      <label class="cb-cell"><input type="checkbox" name="p1" value="Δυσμηνόρροια"> Δυσμηνόρροια</label>
+      <label class="cb-cell"><input type="checkbox" name="p1" value="Έμφραγμα"> Έμφραγμα (Λεπτομέρειες)</label>
+      <label class="cb-cell"><input type="checkbox" name="p1" value="Οφθαλμολογικά Προβλήματα"> Οφθαλμολογικά Προβλήματα (Λεπτομέρειες)</label>
+      <label class="cb-cell"><input type="checkbox" name="p1" value="ΧΑΠ"> ΧΑΠ</label>
+      <label class="cb-cell"><input type="checkbox" name="p1" value="Προβλήματα Ουροποιητικού"> Προβλήματα στο Ουροποιητικό Σύστημα</label>
+      <label class="cb-cell"><input type="checkbox" name="p1" value="Διαταραχές Θυρεοειδούς"> Διαταραχές Θυρεοειδούς: (Υποθυρεοειδισμός / Υπερθυρεοειδισμός/Όζοι)</label>
+      <label class="cb-cell"><input type="checkbox" name="p1" value="Πίεση στα μάτια"> Πίεση στα μάτια</label>
+      <label class="cb-cell"><input type="checkbox" name="p1" value="Αναπνευστικά Προβλήματα"> Αναπνευστικά Προβλήματα (Λεπτομέρειες)</label>
+      <label class="cb-cell"><input type="checkbox" name="p1" value="Προβλήματα Προστάτη"> Προβλήματα Προστάτη</label>
+      <label class="cb-cell"><input type="checkbox" name="p1" value="Αναιμία"> Αναιμία (Τύπος)</label>
+      <label class="cb-cell"><input type="checkbox" name="p1" value="Γλαύκωμα"> Γλαύκωμα</label>
+      <label class="cb-cell"><input type="checkbox" name="p1" value="Άσθμα"> Άσθμα</label>
+      <label class="cb-cell"><input type="checkbox" name="p1" value="Καρκίνος"> Καρκίνος (Πληροφορίες)</label>
+      <label class="cb-cell"><input type="checkbox" name="p1" value="Παχυσαρκία"> Παχυσαρκία / Αυξημένο βάρος</label>
+      <label class="cb-cell"><input type="checkbox" name="p1" value="Παθήσεις Ήπατος ή Χολής"> Παθήσεις Ήπατος ή Χολής (Λεπτομέρειες)</label>
+      <label class="cb-cell"><input type="checkbox" name="p1" value="Αλλεργίες"> Αλλεργίες (Δερματικού ή Αναπνευστικού Τύπου)</label>
+      <label class="cb-cell"><input type="checkbox" name="p1" value="Μεταδοτικό νόσημα"> Οποιοδήποτε μεταδοτικό νόσημα</label>
+      <label class="cb-cell"><input type="checkbox" name="p1" value="Ανεπάρκεια Βιταμινών"> Ανεπάρκεια Βιταμινών (Λεπτομέρειες)</label>
+      <label class="cb-cell"><input type="checkbox" name="p1" value="Κίρρωση / Ηπατική Ανεπάρκεια"> Κίρρωση / Ηπατική Ανεπάρκεια</label>
+      <label class="cb-cell"><input type="checkbox" name="p1" value="Υπνική Άπνοια"> Υπνική Άπνοια</label>
+      <label class="cb-cell"><input type="checkbox" name="p1" value="Άλλη παθολογία"> Οποιαδήποτε άλλη παθολογία</label>
+    </div>
+    <p class="note">• Για κάθε επιλογή παραπάνω, δώστε λεπτομέρειες (τιμές, τύπο, διάρκεια, σοβαρότητα ή θεραπεία).<br>• Εάν σημειώσατε κάποια χρόνια πάθηση, αναφέρετε αν βρίσκεστε υπό ιατρική παρακολούθηση ή λαμβάνετε συγκεκριμένη αγωγή.</p>
+    <textarea id="f_sxolia1" rows="3" placeholder="Σχόλια και συμπληρωματικές πληροφορίες..."></textarea>
+  </div>
+
+  <!-- AUTOANOSA -->
+  <div class="section">
+    <div class="section-title">2. Αυτοάνοσα &amp; Νευρολογικά Νοσήματα</div>
+    <p class="note">Επιλέξτε όσα ισχύουν:</p>
+    <div class="cb-grid" id="grid-p2">
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Hashimoto/Graves"> Αυτοάνοσες Παθήσεις Θυρεοειδούς: (Hashimoto/Νόσος του Graves)</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Ψωρίαση"> Ψωρίαση</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Συστημικός Ερυθηματώδης Λύκος"> Συστημικός Ερυθηματώδης Λύκος (ΣΕΛ)</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Εγκεφαλικό Επεισόδιο"> Εγκεφαλικό Επεισόδιο (Λεπτομέρειες)</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Σκλήρυνση κατά πλάκας"> Σκλήρυνση κατά πλάκας</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Νευραλγία"> Νευραλγία</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Σκληρόδερμα"> Σκληρόδερμα</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Ψωριασική Αρθρίτιδα"> Ψωριασική Αρθρίτιδα</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Μυασθένεια Gravis"> Μυασθένεια Gravis</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Ρευματοειδής Αρθρίτιδα"> Ρευματοειδής Αρθρίτιδα</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Σύνδρομο Raynaud"> Σύνδρομο Raynaud</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Νόσος Πάρκινσον"> Νόσος Πάρκινσον</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Νόσος Addison"> Νόσος Addison</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Ινομυαλγία"> Ινομυαλγία</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Σύνδρομο Sjögren"> Σύνδρομο Sjögren</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Νόσος Alzheimer"> Νόσος Alzheimer</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Αυτοάνοση Ηπατίτιδα"> Αυτοάνοση Ηπατίτιδα</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Ημικρανίες"> Ημικρανίες</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Λεύκη"> Λεύκη</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Νόσος Crohn"> Νόσος του Crohn</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Ίλιγγος"> Ίλιγγος</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Επιληπτικά Επεισόδια"> Επιληπτικά Επεισόδια</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Ελκώδης Κολίτιδα"> Ελκώδης Κολίτιδα</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Άνοια"> Άνοια</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Άλλο αυτοάνοσο"> Οτιδήποτε άλλο</label>
+    </div>
+    <div class="p2-mobile-only" id="grid-p2-mobile">
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Hashimoto/Graves">Αυτοάνοσες Παθήσεις Θυρεοειδούς: (Hashimoto/Νόσος του Graves)</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Ρευματοειδής Αρθρίτιδα">Ρευματοειδής Αρθρίτιδα</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Σκλήρυνση κατά πλάκας">Σκλήρυνση κατά πλάκας</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Νόσος Crohn">Νόσος του Crohn</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Μυασθένεια Gravis">Μυασθένεια Gravis</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Ελκώδης Κολίτιδα">Ελκώδης Κολίτιδα</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Νόσος Addison">Νόσος Addison</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Εγκεφαλικό Επεισόδιο">Εγκεφαλικό Επεισόδιο (Λεπτομέρειες)</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Αυτοάνοση Ηπατίτιδα">Αυτοάνοση Ηπατίτιδα</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Νόσος Πάρκινσον">Νόσος Πάρκινσον</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Συστημικός Ερυθηματώδης Λύκος">Συστημικός Ερυθηματώδης Λύκος (ΣΕΛ)</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Νόσος Alzheimer">Νόσος Alzheimer</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Σκληρόδερμα">Σκληρόδερμα</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Άνοια">Άνοια</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Σύνδρομο Raynaud">Σύνδρομο Raynaud</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Επιληπτικά Επεισόδια">Επιληπτικά Επεισόδια</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Σύνδρομο Sjögren">Σύνδρομο Sjögren</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Νευραλγία">Νευραλγία</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Λεύκη">Λεύκη</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Ινομυαλγία">Ινομυαλγία</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Ψωρίαση">Ψωρίαση</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Ημικρανίες">Ημικρανίες</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Ψωριασική Αρθρίτιδα">Ψωριασική Αρθρίτιδα</label>
+      <label class="cb-cell"><input type="checkbox" name="p2" value="Ίλιγγος">Ίλιγγος</label>
+      <label class="cb-cell" style="grid-column:1/-1;border-right:none;"><input type="checkbox" name="p2" value="Άλλο αυτοάνοσο">Οτιδήποτε άλλο</label>
+    </div>
+    <p class="note">• Για κάθε επιλογή παραπάνω, δώστε λεπτομέρειες (συχνότητα, ημερομηνία διάγνωσης, σοβαρότητα, φαρμακευτική αγωγή).</p>
+    <textarea id="f_sxolia2" rows="3" placeholder="Σχόλια και συμπληρωματικές πληροφορίες..."></textarea>
+  </div>
+
+  <!-- MUSCULOSKELETAL -->
+  <div class="section">
+    <div class="section-title">3. Παθήσεις Μυοσκελετικού Συστήματος &amp; Ορθοπεδικά Προβλήματα</div>
+    <p class="note">Επιλέξτε όσα ισχύουν:</p>
+    <div id="grid-p3">
+      <label class="cb-cell"><input type="checkbox" name="p3" value="Αυχεναλγία">Αυχεναλγία</label>
+      <label class="cb-cell"><input type="checkbox" name="p3" value="Τροχαντηρίτιδα">Τροχαντηρίτιδα</label>
+      <label class="cb-cell"><input type="checkbox" name="p3" value="Οσφυαλγία">Οσφυαλγία</label>
+      <label class="cb-cell"><input type="checkbox" name="p3" value="Οστεοαρθρίτιδα">Οστεοαρθρίτιδα</label>
+      <label class="cb-cell"><input type="checkbox" name="p3" value="Ισχιαλγία">Ισχιαλγία</label>
+      <label class="cb-cell"><input type="checkbox" name="p3" value="Αρθροπλαστική">Αρθροπλαστική</label>
+      <label class="cb-cell"><input type="checkbox" name="p3" value="Δισκοκήλη">Κήλη: (Δίσκου, Ομφαλοκήλη, Βουβωνοκήλη)</label>
+      <label class="cb-cell"><input type="checkbox" name="p3" value="Χονδροπάθεια">Χονδροπάθεια</label>
+      <label class="cb-cell"><input type="checkbox" name="p3" value="Στένωση">Στένωση</label>
+      <label class="cb-cell"><input type="checkbox" name="p3" value="Κύστη Baker">Κύστη Baker</label>
+      <label class="cb-cell"><input type="checkbox" name="p3" value="Σπονδυλόλυση">Σπονδυλόλυση</label>
+      <label class="cb-cell"><input type="checkbox" name="p3" value="Ρήξη">Ρήξη</label>
+      <label class="cb-cell"><input type="checkbox" name="p3" value="Σπονδυλολίσθηση">Σπονδυλολίσθηση</label>
+      <label class="cb-cell"><input type="checkbox" name="p3" value="Μηνίσκος">Μηνίσκος</label>
+      <label class="cb-cell"><input type="checkbox" name="p3" value="Κύφωση">Κύφωση</label>
+      <label class="cb-cell"><input type="checkbox" name="p3" value="Χιαστός">Χιαστός</label>
+      <label class="cb-cell"><input type="checkbox" name="p3" value="Λόρδωση">Λόρδωση</label>
+      <label class="cb-cell"><input type="checkbox" name="p3" value="Διάστρεμμα">Διάστρεμμα</label>
+      <label class="cb-cell"><input type="checkbox" name="p3" value="Σκολίωση">Σκολίωση</label>
+      <label class="cb-cell"><input type="checkbox" name="p3" value="Κάταγμα">Κάταγμα</label>
+      <label class="cb-cell"><input type="checkbox" name="p3" value="Τενοντοπάθεια">Τενοντοπάθεια</label>
+      <label class="cb-cell"><input type="checkbox" name="p3" value="Οστικό Οίδημα">Οστικό Οίδημα</label>
+      <label class="cb-cell"><input type="checkbox" name="p3" value="Τενοντίτιδα">Τενοντίτιδα</label>
+      <label class="cb-cell"><input type="checkbox" name="p3" value="Θλάσεις">Θλάσεις</label>
+      <label class="cb-cell"><input type="checkbox" name="p3" value="Ασβεστοποιός Τενοντίτιδα">Ασβεστοποιός Τενοντίτιδα</label>
+      <label class="cb-cell"><input type="checkbox" name="p3" value="Κράμπες">Κράμπες</label>
+      <label class="cb-cell"><input type="checkbox" name="p3" value="Επικονδυλίτιδα (Tennis Elbow)">Επικονδυλίτιδα (Tennis Elbow)</label>
+      <label class="cb-cell"><input type="checkbox" name="p3" value="Πλατυποδία">Πλατυποδία</label>
+      <label class="cb-cell"><input type="checkbox" name="p3" value="Παγωμένος ώμος">Παγωμένος ώμος</label>
+      <label class="cb-cell"><input type="checkbox" name="p3" value="Πελματιαία Απονευρωσίτιδα">Πελματιαία Απονευρωσίτιδα</label>
+      <label class="cb-cell"><input type="checkbox" name="p3" value="Σύνδρομο καρπιαίου σωλήνα">Σύνδρομο καρπιαίου σωλήνα</label>
+      <label class="cb-cell"><input type="checkbox" name="p3" value="Άκανθα Πτέρνα">Άκανθα Πτέρνα</label>
+      <label class="cb-cell"><input type="checkbox" name="p3" value="Σύνδρομο θωρακικής εξόδου">Σύνδρομο θωρακικής εξόδου</label>
+      <label class="cb-cell"><input type="checkbox" name="p3" value="Κότσι">Κότσι</label>
+      <label class="cb-cell p3-full"><input type="checkbox" name="p3" value="Άλλη Πάθηση ή Τραυματισμός">Άλλη Πάθηση ή Τραυματισμός</label>
+    </div>
+    <p class="note">• Για κάθε επιλογή παραπάνω, δώστε λεπτομέρειες (π.χ. σημείο, ημερομηνία τραυματισμού/διάγνωσης, σοβαρότητα ή θεραπεία).<br>• Διευκρινίστε εάν κάποια από τις παραπάνω παθήσεις επηρεάζει τη δεξιά ή την αριστερή πλευρά (Δ / Α).<br>• Σημειώστε αν κάποιο από τα παραπάνω έχει προκληθεί από ατύχημα, παρέχοντας τις σχετικές λεπτομέρειες.</p>
+    <textarea id="f_sxolia3" rows="3" placeholder="Σχόλια και συμπληρωματικές πληροφορίες..."></textarea>
+  </div>
+
+  <!-- CURRENT SYMPTOMS -->
+  <div class="section">
+    <div class="section-title">4. Τρέχοντα Συμπτώματα</div>
+    <p class="note">Αν αντιμετωπίζετε κάποιο από τα παρακάτω συμπτώματα αυτή την περίοδο, σημειώστε με Χ:</p>
+    <div class="symptoms-row">
+      <label class="symptom-item"><input type="checkbox" name="sym" value="Πόνος"> Πόνος</label>
+      <label class="symptom-item"><input type="checkbox" name="sym" value="Ενόχληση"> Ενόχληση</label>
+      <label class="symptom-item"><input type="checkbox" name="sym" value="Μούδιασμα"> Μούδιασμα</label>
+      <label class="symptom-item"><input type="checkbox" name="sym" value="Δυσκαμψία"> Δυσκαμψία</label>
+      <label class="symptom-item"><input type="checkbox" name="sym" value="Περιορισμός Κίνησης"> Περιορισμός Κίνησης</label>
+    </div>
+    <textarea id="f_symptoms" rows="2" placeholder="Σημείο / Λεπτομέρειες:"></textarea>
+  </div>
+
+  <!-- SURGERIES -->
+  <div class="section">
+      <div class="section-title">5. Χειρουργικές Επεμβάσεις</div>
+      <p style="font-size:12px;color:#555;margin-bottom:5px;">Έχετε υποβληθεί σε χειρουργικές επεμβάσεις; (Αν ναι, παρακαλώ αναφέρετε αναλυτική περιγραφή, σημείο και ημερομηνία/έτος):</p>
+      <textarea id="f_xeir" rows="3"></textarea>
+    </div>
+
+  <!-- MENTAL HEALTH -->
+  <div class="section">
+      <div class="section-title">6. Ιστορικό Ψυχικής &amp; Συναισθηματικής Υγείας</div>
+      <p style="font-size:12px;color:#555;margin-bottom:5px;">Παρακαλώ αναφέρετε τυχόν ψυχολογικά, ψυχοσωματικά ή ψυχιατρικά θέματα που αντιμετωπίζετε (π.χ. έντονο άγχος, κρίσεις πανικού, κλινική κατάθλιψη κ.λπ.) και αν λαμβάνετε σχετική φαρμακευτική αγωγή:</p>
+      <textarea id="f_mental" rows="2"></textarea>
+    </div>
+
+  <!-- PREGNANCY -->
+  <div class="section">
+      <div class="section-title">7. Ύπαρξη Εγκυμοσύνης ή Ιστορικό Τοκετών</div>
+      <p style="font-size:12px;color:#555;margin-bottom:5px;">(Αν είστε έγκυος, αναφέρετε εβδομάδα κύησης. Αν έχετε γεννήσει, διευκρινίστε αν ήταν Φυσιολογικός Τοκετός ή Καισαρική και το έτος):</p>
+      <textarea id="f_egk" rows="2"></textarea>
+    </div>
+
+  <!-- ATHLETIC HISTORY -->
+  <div class="section">
+      <div class="section-title">8. Αθλητικό Ιστορικό &amp; Φυσική Κατάσταση</div>
+      <p style="font-size:12px;color:#555;margin-bottom:5px;">Με ποιο είδος άσκησης ασχολείστε τώρα ή έχετε ασχοληθεί στο παρελθόν; (Αναφέρετε το είδος της δραστηριότητας και τη χρονική διάρκεια):</p>
+      <textarea id="f_athl" rows="2"></textarea>
+    </div>
+
+  <!-- HABITS -->
+  <div class="section">
+    <div class="section-title">9. Καθημερινές Συνήθειες, Δραστηριότητες &amp; Φαρμακευτική Αγωγή</div>
+    <div class="habits-list">
+      <div class="habit-item">
+        <div class="habit-check">
+          <input type="checkbox" id="h_kapn" name="h" value="Κάπνισμα">
+          <span class="habit-label"><label for="h_kapn">Κάπνισμα</label> (Συχνότητα ανά ημέρα/εβδομάδα):</span>
+        </div>
+        <input type="text" id="h_kapn_detail" placeholder="π.χ. 10 τσιγάρα/ημέρα">
+      </div>
+      <div class="habit-item">
+        <div class="habit-check">
+          <input type="checkbox" id="h_alk" name="h" value="Αλκοόλ">
+          <span class="habit-label"><label for="h_alk">Αλκοόλ</label> (Συχνότητα ανά ημέρα/εβδομάδα):</span>
+        </div>
+        <input type="text" id="h_alk_detail" placeholder="π.χ. 2-3 φορές/εβδομάδα">
+      </div>
+      <div class="habit-item">
+        <div class="habit-check">
+          <input type="checkbox" id="h_farm" name="h" value="Φαρμακευτική Αγωγή">
+          <span class="habit-label"><label for="h_farm">Φαρμακευτική Αγωγή</label> (Αναφέρετε ποια σκευάσματα λαμβάνετε &amp; για ποιο λόγο):</span>
+        </div>
+        <input type="text" id="h_farm_detail" placeholder="">
+      </div>
+      <div class="habit-item">
+        <div class="habit-check">
+          <input type="checkbox" id="h_enes" name="h" value="Ενέσιμα Σκευάσματα">
+          <span class="habit-label"><label for="h_enes">Ενέσιμα Σκευάσματα / Θεραπείες</label> (π.χ. Mounjaro, Ozempic, αισθητικές ενέσεις κ.λπ.):</span>
+        </div>
+        <input type="text" id="h_enes_detail" placeholder="">
+      </div>
+      <div class="habit-item">
+        <div class="habit-check">
+          <input type="checkbox" id="h_vit" name="h" value="Βιταμίνες">
+          <span class="habit-label"><label for="h_vit">Βιταμίνες / Συμπληρώματα Διατροφής</label> (Λεπτομέρειες):</span>
+        </div>
+        <input type="text" id="h_vit_detail" placeholder="">
+      </div>
+      <div class="habit-item">
+        <div class="habit-check">
+          <input type="checkbox" id="h_sub" name="h" value="Χρήση Ουσιών">
+          <span class="habit-label"><label for="h_sub">Χρήση Ουσιών</label>:</span>
+        </div>
+        <input type="text" id="h_sub_detail" placeholder="">
+      </div>
+      <div class="habit-item">
+        <div class="habit-check">
+          <input type="checkbox" id="h_hobby" name="h" value="Δραστηριότητες / Χόμπι">
+          <span class="habit-label"><label for="h_hobby">Δραστηριότητες / Χόμπι</label> με παρατεταμένη στατική θέση ή επαναλαμβανόμενες κινήσεις (π.χ. μουσικό όργανο, χειροτεχνία, ζωγραφική, γλυπτική, πλέξιμο, κηπουρική κτλ.). Αναφέρετε είδος &amp; ώρες/εβδομάδα:</span>
+        </div>
+        <input type="text" id="h_hobby_detail" placeholder="">
+      </div>
+    </div>
+  </div>
+
+  <!-- GOALS -->
+  <div class="section">
+      <div class="section-title">10. Προσωπικοί Στόχοι <span class="req">*</span></div>
+      <p style="font-size:12px;color:#555;margin-bottom:5px;">Τι σας έφερε στο χώρο μας και ποιοι είναι οι κύριοι στόχοι σας από τη συμμετοχή στα προγράμματά μας; Τι θα θέλατε να βελτιώσετε ή να διευκολύνετε στην καθημερινότητα σας; (π.χ. ενδυνάμωση, αποκατάσταση τραυματισμού, βελτίωση στάσης σώματος, ευεξία κ.λπ.):</p>
+      <textarea id="f_velt" rows="3"></textarea>
+    </div>
+
+  <!-- HOW DID YOU HEAR -->
+  <div class="section">
+    <div class="bullet-section">
+      <div class="section-title">11. Πώς Ενημερωθήκατε για το Studio Μας; <span class="req">*</span></div>
+      <p style="font-size:12px;color:#555;margin-bottom:5px;">(π.χ. Social Media, Google, περαστικός/ταμπέλα, από φίλο/γνωστό):</p>
+      <textarea id="f_pos" rows="2"></textarea>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- DECLARATION -->
+  <div class="declaration">
+    <h3>Υπεύθυνη Δήλωση &amp; Συγκατάθεση GDPR</h3>
+
+    <h4>Α) Δήλωση Προστασίας Προσωπικών Δεδομένων (GDPR):</h4>
+    Σύμφωνα με το Γενικό Κανονισμό Προστασίας Δεδομένων (ΕΕ) 2016/679 (GDPR), ενημερώνομαι ότι το Flow Studio Pilates συλλέγει και επεξεργάζεται τα προσωπικά μου δεδομένα (συμπεριλαμβανομένων των ευαίσθητων δεδομένων υγείας) αποκλειστικά και μόνο:<br>
+    1. Για την ασφαλή σχεδίαση των προγραμμάτων εκγύμνασης.<br>
+    2. Την επικοινωνία μου για θέματα που αφορούν τις συνεδρίες μου.<br>
+    Τα δεδομένα μου παραμένουν απολύτως εμπιστευτικά, αποθηκεύονται με ασφάλεια και δεν διαβιβάζονται/κοινοποιούνται σε τρίτους. Γνωρίζω ότι διατηρώ το δικαίωμα πρόσβασης, διόρθωσης ή διαγραφής των δεδομένων μου ανά πάσα στιγμή, κατόπιν του αιτήματος μου.
+
+    <h4>Β) Δήλωση Υγείας &amp; Απαλλαγή Ευθύνης:</h4>
+    Με την υπογραφή μου, δηλώνω υπεύθυνα ότι οι πληροφορίες που παρείχα στο παρόν ιστορικό είναι απολύτως ακριβείς και αληθείς. Βρίσκομαι σε καλή σωματική και ψυχική κατάσταση και δεν πάσχω από κάποιο νόσημα που να αποκλείει τη συμμετοχή μου σε προγράμματα σωματικής άσκησης.<br>
+    Έχω λάβει πλήρη γνώση των κανόνων λειτουργίας του Flow Studio Pilates. Αναλαμβάνω την υποχρέωση να προσκομίσω το συντομότερο ιατρική γνωμάτευση που να πιστοποιεί την ικανότητά μου για άσκηση για την περίοδο 2026-2027. Μέχρι την προσκόμιση της, συμμετέχω στα προγράμματα με αποκλειστικά δική μου ευθύνη, απαλλάσσοντας το studio και το προσωπικό του από οποιαδήποτε ευθύνη σε περίπτωση τραυματισμού ή υποτροπής υπάρχουσας πάθησης.
+
+    <h4>Γ) Πολιτική Ακυρώσεων &amp; Λειτουργίας Μαθημάτων:</h4>
+    Για την εύρυθμη λειτουργία του studio και τον σεβασμό προς τους δασκάλους και τους υπόλοιπους ασκούμενους που βρίσκονται σε λίστα αναμονής, ισχύει η εξής πολιτική ακυρώσεων:<br>
+    • <strong>Για μαθήματα από Τρίτη έως Σάββατο:</strong> Η ακύρωση της θέσης σας θα πρέπει να γίνεται τουλάχιστον <strong>12 ώρες</strong> πριν από την προγραμματισμένη ώρα του μαθήματος.<br>
+    • <strong>Για τα μαθήματα της Δευτέρας:</strong> Η ακύρωση πρέπει να πραγματοποιείται το αργότερο έως <strong>Σάββατο στις 20:00</strong>. Ακυρώσεις που γίνονται εντός της Κυριακής δεν θα γίνονται δεκτές.<br>
+    • <strong>Εκπρόθεσμη Ακύρωση:</strong> Σε περίπτωση που ένα μάθημα ακυρωθεί πέραν των παραπάνω χρονικών ορίων ή σε περίπτωση μη εμφάνισης (no-show), το μάθημα <strong>χρεώνεται κανονικά</strong>, ανεξαρτήτως λόγου και αφαιρείται αυτόματα από το πακέτο σας.
+  </div>
+
+  <!-- CONSENT -->
+  <!-- Παγίδα για bots: κρυφό πεδίο, ο πελάτης δεν το βλέπει ούτε το συμπληρώνει -->
+  <div class="hpx" aria-hidden="true">
+    <label for="x_note_7q">Leave this empty</label>
+    <input type="text" id="x_note_7q" name="x_note_7q" tabindex="-1" autocomplete="off" value="">
+  </div>
+
+  <div class="consent-row">
+    <input type="checkbox" id="consent">
+    <label for="consent">Συναινώ &amp; Αποδέχομαι ανεπιφύλακτα όλους τους παραπάνω όρους (Α, Β, Γ), την επεξεργασία των προσωπικών μου δεδομένων και των δεδομένων υγείας για τους παραπάνω σκοπούς, καθώς και την πολιτική ακυρώσεων του studio.</label>
+  </div>
+
+  <!-- SIGNATURE + DATE -->
+  <div class="section">
+    <div class="sig-wrapper">
+      <div>
+        <div class="sig-label">Υπογραφή <span class="req">*</span> <span style="font-weight:400;color:#999;">(ζωγραφίστε με το δάχτυλο ή το ποντίκι)</span></div>
+        <div class="sig-container">
+          <canvas id="sigCanvas"></canvas>
+          <div class="sig-hint" id="sigHint">✍️ Υπογράψτε εδώ</div>
+          <button class="sig-clear" onclick="clearSig()">✕ Καθαρισμός</button>
+        </div>
+      </div>
+      <div>
+        <div class="date-label">Ημερομηνία</div>
+        <input type="date" id="f_date" style="border:1.5px solid #cdd2c0;border-radius:5px;padding:8px 10px;font-size:13px;font-family:inherit;background:#f6f7f2;width:100%;">
+      </div>
+    </div>
+  </div>
+
+  <!-- SUBMIT -->
+  <div class="action-bar">
+    <button class="btn-submit" id="submitBtn" onclick="submitForm()">📨 Αποστολή Εντύπου</button>
+    <div id="editBox" style="display:none;margin-top:12px;">
+      <div class="submit-note" id="editNote" style="margin-bottom:8px;"></div>
+      <button type="button" class="btn-edit" id="editBtn" onclick="startEdit()">✏️ Διόρθωση στοιχείων</button>
+    </div>
+    <div class="submit-note">Το έντυπο θα ανέβει αυτόματα στο Google Drive</div>
+  </div>
+
+  <div class="form-footer">
+    Όλα τα στοιχεία και οι πληροφορίες που μας δηλώνετε παραμένουν εμπιστευτικά και ασφαλή μέσα στο χώρο της σχολής.
+  </div>
+</div>
+
+<div id="doneScreen" role="dialog" aria-modal="true"><div class="card">
+  <div class="tick">✓</div><h2>Ευχαριστούμε!</h2><p id="doneSub">Το έντυπό σας στάλθηκε επιτυχώς.</p>
+  <p style="font-size:12px;color:#777;margin-bottom:4px;">Κωδικός αναφοράς</p><div class="code" id="doneCode"></div>
+  <p style="font-size:12px;color:#777;">Μπορείτε να κλείσετε αυτή τη σελίδα.</p>
+  <button type="button" class="btn-edit" id="doneEdit" style="display:none" onclick="closeDone();startEdit()">✏️ Διόρθωση στοιχείων</button>
+  <button type="button" class="btn-edit" onclick="closeDone()">Κλείσιμο</button>
+</div></div>
+<div id="toast"></div>
+
+<script>
+  const FORM_LOADED_AT = Date.now();  // για τον έλεγχο «πολύ γρήγορης» υποβολής (bots)
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxNEybaDiNjAglZ80ONvtVF4xitm_RYyGmwLFZUzDp9oFRjR9ANyi-5cf5CFMPx8YEe/exec';
+
+  // Τοπική ημερομηνία (το valueAsDate δίνει ώρα UTC και μετά τα μεσάνυχτα βγάζει χθεσινή μέρα)
+  (function () {
+    const n = new Date();
+    document.getElementById('f_date').value =
+      n.getFullYear() + '-' + String(n.getMonth() + 1).padStart(2, '0') + '-' + String(n.getDate()).padStart(2, '0');
+  })();
+
+  // ── Signature ──
+  const canvas = document.getElementById('sigCanvas');
+  const ctx = canvas.getContext('2d');
+  const hint = document.getElementById('sigHint');
+  let drawing = false, hasSig = false;
+
+  let canvasResizes = 0;
+  function resizeCanvas() {
+    const dpr = window.devicePixelRatio || 1;
+    const W = canvas.parentElement.clientWidth;
+    const H = 120;
+    if (W === 0) { setTimeout(resizeCanvas, 200); return; }
+    // Στο κινητό το "resize" έρχεται και όταν κρύβεται/εμφανίζεται η μπάρα του browser ή ανοίγει το
+    // πληκτρολόγιο. Αν οι διαστάσεις του καμβά δεν άλλαξαν, δεν τον αγγίζουμε (η αλλαγή width/height τον ΣΒΗΝΕΙ).
+    if (canvas.width === Math.floor(W * dpr) && canvas.height === Math.floor(H * dpr)) return;
+    // Αν όντως άλλαξε το πλάτος (π.χ. στροφή οθόνης), κρατάμε ό,τι έχει ζωγραφιστεί και το ξαναβάζουμε.
+    let snap = null;
+    if (hasSig && canvas.width > 0 && canvas.height > 0) {
+      snap = document.createElement('canvas');
+      snap.width = canvas.width; snap.height = canvas.height;
+      snap.getContext('2d').drawImage(canvas, 0, 0);
+    }
+    canvasResizes++;
+    canvas.width = Math.floor(W * dpr);
+    canvas.height = Math.floor(H * dpr);
+    canvas.style.width = W + 'px';
+    canvas.style.height = H + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.strokeStyle = '#1a1a2e'; ctx.lineWidth = 2.5; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    if (snap) ctx.drawImage(snap, 0, 0, W, H);
+  }
+  function initCanvas() { resizeCanvas(); }
+  if (document.readyState === 'complete') initCanvas(); else window.addEventListener('load', initCanvas);
+  window.addEventListener('resize', resizeCanvas);
+
+  function getPos(e) {
+    const r = canvas.getBoundingClientRect();
+    return { x: e.clientX - r.left, y: e.clientY - r.top };
+  }
+  canvas.addEventListener('pointerdown', e => {
+    e.preventDefault(); canvas.setPointerCapture(e.pointerId); drawing = true;
+    const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y);
+    if (!hasSig) { hint.style.display = 'none'; hasSig = true; }
+  }, { passive: false });
+  canvas.addEventListener('pointermove', e => {
+    if (!drawing) return; e.preventDefault();
+    const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(p.x, p.y);
+  }, { passive: false });
+  canvas.addEventListener('pointerup', () => { drawing = false; ctx.beginPath(); });
+  canvas.addEventListener('pointercancel', () => { drawing = false; ctx.beginPath(); });
+
+  function clearSig() {
+    const dpr = window.devicePixelRatio || 1;
+    ctx.clearRect(0, 0, canvas.width/dpr, canvas.height/dpr);
+    hint.style.display = 'block'; hasSig = false;
+  }
+
+  // Πόσα pixel του καμβά έχουν πραγματικά μελάνι. Ένα απλό "άγγιγμα" ή ένας σβησμένος καμβάς δίνει ~0.
+  const INK_MIN = 100;
+  function inkPixels() {
+    try {
+      const d = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+      let n = 0;
+      for (let i = 3; i < d.length; i += 4) { if (d[i] > 40) n++; }
+      return n;
+    } catch (e) { return -1; }   // δεν μπορέσαμε να ελέγξουμε → δεν μπλοκάρουμε
+  }
+  function signatureOk() {
+    if (!hasSig) return false;
+    const ink = inkPixels();
+    if (ink >= 0 && ink < INK_MIN) { clearSig(); return false; }   // "υπογραφή" χωρίς μελάνι: τη μηδενίζουμε
+    return true;
+  }
+
+  // Επιλογές ενός group χωρίς διπλότυπα (η ενότητα 2 έχει δύο λίστες: υπολογιστή & κινητού)
+  function getChecked(name) {
+    const vals = [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(c => c.value);
+    return [...new Set(vals)].join(', ') || '—';
+  }
+
+  // Συγχρονισμός: ό,τι τσεκάρεται/ξετσεκάρεται σε μία λίστα αλλάζει και στο «δίδυμό» του στην άλλη
+  document.addEventListener('change', e => {
+    const el = e.target;
+    if (el.type !== 'checkbox' || !el.name) return;
+    document.querySelectorAll(`input[type="checkbox"][name="${el.name}"]`).forEach(other => {
+      if (other !== el && other.value === el.value) other.checked = el.checked;
+    });
+  });
+
+  function showToast(msg, isError) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.className = isError ? 'error' : '';
+    t.style.display = 'block';
+    clearTimeout(showToast._t); showToast._t = setTimeout(() => t.style.display = 'none', isError ? 10000 : 6000);
+  }
+
+  // ── Υποχρεωτικά πεδία ──
+  function digitsOf(v) { return (v || '').replace(/\D/g, '').length; }
+  function checkRequired(names) {
+    const $ = id => document.getElementById(id);
+    const filled = (id, n) => $(id).value.trim().length >= (n || 2);
+    const checks = [
+      ['onoma',   [$('f_onoma')],                        () => filled('f_onoma', 3)],
+      ['epag',    [$('f_epag')],                         () => filled('f_epag')],
+      ['dob',     [$('f_dob_d'), $('f_dob_m'), $('f_dob_y')], () => $('f_dob_d').value && $('f_dob_m').value && $('f_dob_y').value],
+      ['dieu',    [$('f_dieu')],                         () => filled('f_dieu', 3)],
+      ['til',     [$('f_til')],                          () => digitsOf($('f_til').value) >= 10],
+      ['email',   [$('f_email')],                        () => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test($('f_email').value.trim())],
+      ['ice',     [$('f_ice')],                          () => digitsOf($('f_ice').value) >= 10 && /[A-Za-zΑ-Ωα-ωΆ-Ώά-ώ]/.test($('f_ice').value)],
+      ['velt',    [$('f_velt')],                         () => filled('f_velt', 3)],
+      ['pos',     [$('f_pos')],                          () => filled('f_pos')],
+      ['consent', [document.querySelector('.consent-row')],   () => $('consent').checked],
+      ['sig',     [document.querySelector('.sig-container')], () => signatureOk()]
+    ];
+    const missing = []; let first = null;
+    document.querySelectorAll('.err-msg').forEach(n => n.remove());
+    checks.forEach(([key, els, ok]) => {
+      const good = !!ok();
+      els.forEach(el => el && el.classList.toggle('invalid', !good));
+      if (!good) {
+        missing.push(names[key]); if (!first) first = els[0];
+        const host = els.length > 1 ? els[0].parentElement : els[0];
+        const m = document.createElement('div'); m.className = 'err-msg'; m.textContent = '⚠ Λείπει ή δεν είναι σωστό: ' + names[key];
+        host.insertAdjacentElement('afterend', m);
+      }
+    });
+    if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return missing;
+  }
+  // Το κόκκινο φεύγει μόλις ο χρήστης διορθώσει το πεδίο
+  function clearErr(el) {
+    [el, el.parentElement, el.closest && el.closest('.consent-row')].forEach(n => {
+      const nx = n && n.nextElementSibling; if (nx && nx.classList.contains('err-msg')) nx.remove();
+    });
+  }
+  document.addEventListener('input',  e => { if (e.target.classList) { e.target.classList.remove('invalid'); clearErr(e.target); } });
+  document.addEventListener('change', e => {
+    if (!e.target.classList) return;
+    e.target.classList.remove('invalid'); clearErr(e.target);
+    if (e.target.id === 'consent') document.querySelector('.consent-row').classList.remove('invalid');
+    if (/^f_dob_/.test(e.target.id)) ['f_dob_d','f_dob_m','f_dob_y'].forEach(id => document.getElementById(id).classList.remove('invalid'));
+  });
+  document.getElementById('sigCanvas').addEventListener('pointerdown', () => { const c = document.querySelector('.sig-container'); c.classList.remove('invalid'); const nx = c.nextElementSibling; if (nx && nx.classList.contains('err-msg')) nx.remove(); });
+
+  // Υπογραφή σε σταθερό μέγεθος (έως 600px πλάτος) — ίδιο μικρό αρχείο από κάθε κινητό
+  function signatureDataURL() {
+    const maxW = 600;
+    const scale = Math.min(1, maxW / canvas.width);
+    if (scale === 1) return canvas.toDataURL('image/png');
+    const c2 = document.createElement('canvas');
+    c2.width = Math.round(canvas.width * scale);
+    c2.height = Math.round(canvas.height * scale);
+    const x = c2.getContext('2d');
+    x.imageSmoothingQuality = 'high';
+    x.drawImage(canvas, 0, 0, c2.width, c2.height);
+    return c2.toDataURL('image/png');
+  }
+
+  // ── Διόρθωση μετά την αποστολή ──
+  let editToken = null, editTimer = null;
+  function showDone(sid, wasEdit) {
+    document.getElementById('doneCode').textContent = String(sid || '').slice(0, 8);
+    document.getElementById('doneSub').textContent = wasEdit ? 'Το διορθωμένο έντυπό σας στάλθηκε.' : 'Το έντυπό σας στάλθηκε επιτυχώς.';
+    document.getElementById('doneEdit').style.display = editToken ? 'block' : 'none';
+    document.getElementById('doneScreen').classList.add('show');
+  }
+  function closeDone() { document.getElementById('doneScreen').classList.remove('show'); }
+  function showEditOption(min) {
+    document.getElementById('editNote').textContent = 'Κάνατε κάποιο λάθος; Μπορείτε να το διορθώσετε μέσα στα επόμενα ' + min + ' λεπτά. Θα χρειαστεί να υπογράψετε ξανά.';
+    document.getElementById('editBox').style.display = 'block';
+    clearTimeout(editTimer);
+    editTimer = setTimeout(() => {          // μετά το χρονικό όριο το κουμπί εξαφανίζεται
+      document.getElementById('editBox').style.display = 'none';
+    }, min * 60 * 1000);
+  }
+  function startEdit() {
+    clearSig();                              // νέα υπογραφή για το διορθωμένο έντυπο
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = false; btn.textContent = '📨 Αποστολή διορθωμένου εντύπου';
+    document.getElementById('editBox').style.display = 'none';
+    showToast('✏️ Κάντε τις αλλαγές, υπογράψτε ξανά και πατήστε «Αποστολή».', false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ── Αποστολή με αυτόματη επανάληψη ──
+  function newSubmissionId() {
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    return 'id-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 12);
+  }
+  async function postOnce(body) {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 12000);   // 12'' ανά προσπάθεια· αν το script δουλεύει ακόμα, η επόμενη προσπάθεια περιμένει το ίδιο αποτέλεσμα
+    try {
+      const resp = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: body,
+        signal: ctrl.signal
+      });
+      const text = await resp.text();
+      try { return JSON.parse(text); }
+      catch (e) { const err = new Error('Μη αναμενόμενη απάντηση από τον server (HTTP ' + resp.status + ')'); err.retry = true; throw err; }
+    } catch (err) {
+      if (err && err.retry === undefined) err.retry = true;   // Failed to fetch / timeout: ξαναρωτάμε (δεν φτιάχνει δεύτερο PDF)
+      throw err;
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+  async function postWithRetry(body, attempts) {
+    let lastErr;
+    for (let i = 0; i < attempts; i++) {
+      try { return await postOnce(body); }
+      catch (err) {
+        lastErr = err;
+        if (!err.retry) break;
+        if (i < attempts - 1) document.getElementById('submitBtn').textContent = '⏳ Ολοκλήρωση αποστολής...';
+        await new Promise(r => setTimeout(r, 1500 * (i + 1)));
+      }
+    }
+    throw lastErr;
+  }
+
+  async function submitForm() {
+    const onoma = document.getElementById('f_onoma').value.trim();
+    // ── Έλεγχος υποχρεωτικών πεδίων ──
+    const missing = checkRequired({
+      onoma: 'Ονοματεπώνυμο', epag: 'Επάγγελμα', dob: 'Ημερομηνία Γέννησης', dieu: 'Διεύθυνση & Περιοχή',
+      til: 'Τηλέφωνο (τουλάχιστον 10 ψηφία)', email: 'Email (έγκυρη διεύθυνση)',
+      ice: 'Επαφή Έκτακτης Ανάγκης — όνομα και τηλέφωνο', velt: 'Προσωπικοί Στόχοι',
+      pos: 'Πώς ενημερωθήκατε για το studio', consent: 'Αποδοχή όρων', sig: 'Υπογραφή'
+    });
+    if (missing.length) { showToast('⚠️ Συμπληρώστε: ' + missing.join(', '), true); return; }
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true; btn.textContent = '⏳ Ανέβασμα στο Drive...';
+
+    const dateStr = new Date().toLocaleString('el-GR');
+
+    // Habits with details
+    const habitsArr = [];
+    [['h_kapn','h_kapn_detail','Κάπνισμα'],['h_alk','h_alk_detail','Αλκοόλ'],
+     ['h_farm','h_farm_detail','Φαρμακευτική Αγωγή'],['h_enes','h_enes_detail','Ενέσιμα'],
+     ['h_vit','h_vit_detail','Βιταμίνες/Συμπληρώματα'],['h_sub','h_sub_detail','Χρήση Ουσιών'],
+     ['h_hobby','h_hobby_detail','Δραστηριότητες/Χόμπι']
+    ].forEach(([cbId, detId, label]) => {
+      if (document.getElementById(cbId).checked) {
+        const det = document.getElementById(detId).value;
+        habitsArr.push(label + (det ? ': ' + det : ''));
+      }
+    });
+
+    try {
+      btn.textContent = '⏳ Ανέβασμα στο Drive...';
+      const params = {};
+      params.lang = 'gr';
+      params.onoma = onoma;
+      params.date = dateStr.replace(/[/:, ]/g, '_');
+      params.epag = document.getElementById('f_epag').value || '';
+      const dob_d = document.getElementById('f_dob_d').value;
+      const dob_m = document.getElementById('f_dob_m').value;
+      const dob_y = document.getElementById('f_dob_y').value;
+      const dob_val = (dob_d && dob_m && dob_y) ? dob_d + '/' + dob_m + '/' + dob_y : '';
+      params.dob = dob_val;
+      params.dieu = document.getElementById('f_dieu').value || '';
+      params.til = document.getElementById('f_til').value || '';
+      params.email = document.getElementById('f_email').value || '';
+      params.ice = document.getElementById('f_ice').value || '';
+      params.p1 = getChecked('p1');
+      params.p2 = getChecked('p2');
+      params.p3 = getChecked('p3');
+      params.sym = getChecked('sym');
+      params.sxolia1 = document.getElementById('f_sxolia1').value || '';
+      params.sxolia2 = document.getElementById('f_sxolia2').value || '';
+      params.sxolia3 = document.getElementById('f_sxolia3').value || '';
+      params.symptoms_detail = document.getElementById('f_symptoms').value || '';
+      params.xeir = document.getElementById('f_xeir').value || '';
+      params.mental = document.getElementById('f_mental').value || '';
+      params.egk = document.getElementById('f_egk').value || '';
+      params.athl = document.getElementById('f_athl').value || '';
+      params.habits = habitsArr.join(' | ') || '—';
+      params.velt = document.getElementById('f_velt').value || '';
+      params.pos = document.getElementById('f_pos').value || '';
+      params.fdate = document.getElementById('f_date').value || '';
+
+      params.action = 'submit';
+      params.consent = document.getElementById('consent').checked ? 'yes' : '';
+      params.editToken = editToken || '';
+      params.sid = newSubmissionId();   // ίδιος κωδικός σε όλες τις επαναλήψεις αυτής της αποστολής
+      params.hp = document.getElementById('x_note_7q').value;
+      params.t = Date.now() - FORM_LOADED_AT;
+      const sigData = hasSig ? signatureDataURL() : '';
+      params.sig = sigData;
+      // Τεχνικά στοιχεία για το log του server (καμία πληροφορία υγείας)
+      params.diag = {
+        ua: navigator.userAgent, vw: window.innerWidth, vh: window.innerHeight,
+        dpr: window.devicePixelRatio || 1, sigW: canvas.width, sigH: canvas.height,
+        ink: inkPixels(), resizes: canvasResizes, sigLen: sigData.length,
+        fillS: Math.round((Date.now() - FORM_LOADED_AT) / 1000)
+      };
+
+      // Ένα αίτημα με όλα τα στοιχεία + υπογραφή. Αν χαθεί η απάντηση (π.χ. 404 της Google,
+      // στιγμιαία διακοπή), ξαναρωτάμε αυτόματα με τον ίδιο κωδικό — το script δεν φτιάχνει δεύτερο PDF.
+      const result = await postWithRetry(JSON.stringify(params), 4);
+      if (!result || result.ok !== true) { const se = new Error((result && result.error) || 'Unknown error'); se.fromServer = true; throw se; }
+
+      const wasEdit = !!editToken;
+      editToken = result.editToken || null;
+      showToast(!wasEdit ? '✅ Το έντυπο αποθηκεύτηκε επιτυχώς!' : (result.replaced ? '✅ Το διορθωμένο έντυπο αποθηκεύτηκε!' : '✅ Αποθηκεύτηκε ως νέο έντυπο (ο χρόνος διόρθωσης είχε λήξει).'), false);
+      btn.textContent = '✅ Εστάλη!';
+      showDone(params.sid, wasEdit);
+      if (editToken) showEditOption(result.editMinutes || 30);
+    } catch(err) {
+      console.error(err);
+      const reason = (err && err.name === 'AbortError') ? 'Η σύνδεση άργησε πολύ' : ((err && err.message) || '').replace(/[.\s]+$/, '');
+      if (err && err.fromServer) showToast('❌ ' + reason + '.', true);
+      else showToast('❌ Η αποστολή απέτυχε' + (reason ? ': ' + reason : '') + '. Ελέγξτε τη σύνδεσή σας και δοκιμάστε ξανά.', true);
+      btn.disabled = false; btn.textContent = editToken ? '📨 Αποστολή διορθωμένου εντύπου' : '📨 Αποστολή Εντύπου';
+    }
+  }
+</script>
+
+
+
+<script>
+(function() {
+  function syncHabits() {
+    document.querySelectorAll('.habit-item').forEach(function(it) {
+      var cb = it.querySelector('input[type="checkbox"]');
+      if (cb) it.classList.toggle('open', cb.checked);
+    });
+    var any = document.querySelectorAll('input[name="sym"]:checked').length > 0;
+    var sy = document.getElementById('f_symptoms'); if (sy) sy.style.display = any ? '' : 'none';
+  }
+  document.addEventListener('change', syncHabits);
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', syncHabits); else syncHabits();
+})();
+</script>
+<script>
+(function() {
+  function reorder() {
+    var mobile = window.innerWidth <= 700;
+
+    document.querySelectorAll('.cb-grid.cols-4').forEach(function(grid) {
+      var cells = grid.querySelectorAll('.cb-cell');
+
+      cells.forEach(function(cell, i) {
+        if (mobile) {
+          var row = Math.floor(i / 4);
+          var col = i % 4;
+
+          // Mobile order:
+          // Desktop columns 1 + 3 first
+          // Desktop columns 2 + 4 afterwards
+          var visualOrder = 0;
+
+          if (col === 0) visualOrder = row * 2;
+          if (col === 2) visualOrder = row * 2 + 1;
+          if (col === 1) visualOrder = 1000 + row * 2;
+          if (col === 3) visualOrder = 1000 + row * 2 + 1;
+
+          cell.style.order = visualOrder;
+
+          cell.classList.remove('mobile-left','mobile-right');
+          if (visualOrder % 2 === 0) {
+            cell.classList.add('mobile-left');
+          } else {
+            cell.classList.add('mobile-right');
+          }
+
+        } else {
+          cell.style.order = '';
+          cell.classList.remove('mobile-left','mobile-right');
+        }
+      });
+
+      grid.style.gridTemplateColumns = mobile ? 'repeat(2, 1fr)' : '';
+    });
+
+    document.querySelectorAll('.cb-grid.cols-5').forEach(function(grid) {
+      var cells = grid.querySelectorAll('.cb-cell');
+
+      cells.forEach(function(cell, i) {
+        if (mobile) {
+          var dc = i % 5;
+          var dr = Math.floor(i / 5);
+          var mc = dc < 3 ? 0 : 1;
+          var mr = dr * 3 + (dc % 3);
+          cell.style.order = mc * 10000 + mr;
+        } else {
+          cell.style.order = '';
+          cell.classList.remove('mobile-left','mobile-right');
+        }
+      });
+
+      grid.style.gridTemplateColumns = mobile ? 'repeat(2, 1fr)' : '';
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', reorder);
+  } else {
+    reorder();
+  }
+
+  window.addEventListener('resize', reorder);
+})();
+</script>
+</body>
+</html>
