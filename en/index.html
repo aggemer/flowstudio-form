@@ -646,6 +646,7 @@
   <button type="button" class="btn-edit" id="doneEdit" style="display:none" onclick="closeDone();startEdit()">✏️ Correct my details</button>
   <button type="button" class="btn-edit" onclick="closeDone()">Close</button>
 </div></div>
+<div style="text-align:center;font-size:10px;color:#aaa;padding:6px 0 18px;">v3</div>
 <div id="toast"></div>
 
 <script>
@@ -1034,7 +1035,7 @@
 </script>
 <script>
 (function() {
-  var KEY = 'flowstudio_draft_en', TTL = 12 * 3600 * 1000, off = false, timer = null;
+  var KEY = 'flowstudio_draft_en', TTL = 12 * 3600 * 1000, off = false, timer = null, dirty = false;
   var SKIP = { x_note_7q: 1, consent: 1, f_date: 1 };
   function controls() {
     return [].filter.call(document.querySelectorAll('input, select, textarea'), function(el) {
@@ -1043,7 +1044,7 @@
   }
   function keyOf(el) { return el.id || (el.name + '|' + el.value); }
   function save() {
-    if (off) return;
+    if (off || !dirty) return;
     try {
       var d = {};
       controls().forEach(function(el) {
@@ -1054,7 +1055,7 @@
       else localStorage.removeItem(KEY);
     } catch (e) {}
   }
-  function schedule() { clearTimeout(timer); timer = setTimeout(save, 800); }
+  function schedule() { dirty = true; clearTimeout(timer); timer = setTimeout(save, 800); }
   function restore() {
     try {
       var raw = localStorage.getItem(KEY); if (!raw) return;
