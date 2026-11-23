@@ -354,13 +354,32 @@
           </select>
           <script>
             (function() {
-              const sel = document.getElementById('f_dob_y');
+              const dSel = document.getElementById('f_dob_d'), mSel = document.getElementById('f_dob_m'), ySel = document.getElementById('f_dob_y');
+              // Έτη: από το 1940 μέχρι το τρέχον έτος (προστίθεται αυτόματα κάθε νέο έτος)
               const currentYear = new Date().getFullYear();
               for (let y = 1940; y <= currentYear; y++) {
                 const opt = document.createElement('option');
                 opt.value = y; opt.textContent = y;
-                sel.appendChild(opt);
+                ySel.appendChild(opt);
               }
+              // Ημέρες: 28/29/30/31 ανάλογα με τον μήνα και το έτος (το 29 Φεβ. μόνο σε δίσεκτο έτος)
+              const dayLabel = dSel.options[0].textContent;
+              function updateDays() {
+                const m = parseInt(mSel.value, 10), y = parseInt(ySel.value, 10);
+                const max = m ? new Date(y || 2000, m, 0).getDate() : 31;
+                const keep = dSel.value;
+                dSel.innerHTML = '';
+                const first = document.createElement('option'); first.value = ''; first.textContent = dayLabel; dSel.appendChild(first);
+                for (let d = 1; d <= max; d++) {
+                  const v = String(d).padStart(2, '0');
+                  const opt = document.createElement('option'); opt.value = v; opt.textContent = v; dSel.appendChild(opt);
+                }
+                if (keep && parseInt(keep, 10) <= max) dSel.value = keep;
+              }
+              mSel.addEventListener('change', updateDays);
+              ySel.addEventListener('change', updateDays);
+              window.updateDobDays = updateDays;
+              updateDays();
             })();
           </script>
         </div>
@@ -1250,6 +1269,7 @@
         n++;
       });
       if (n) {
+        if (window.updateDobDays) updateDobDays();
         document.dispatchEvent(new Event('change'));
         if (typeof showToast === 'function') showToast('↩️ Επαναφέραμε όσα είχατε ήδη συμπληρώσει. Η υπογραφή και η αποδοχή όρων θέλουν ξανά από εσάς.', false);
       }
